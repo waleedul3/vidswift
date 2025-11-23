@@ -46,7 +46,7 @@
     - Root Directory: `frontend` (IMPORTANT)
 
 4.  **Environment Variables**:
-    - Add `NEXT_PUBLIC_API_URL` = `https://vidswift-api.fly.dev` (or your custom domain)
+    - Add `NEXT_PUBLIC_API_URL` = `https://vidswift-api.onrender.com` (or your custom domain)
 
 5.  **Deploy**:
     - Click "Deploy".
@@ -71,8 +71,8 @@
 3.  **Subdomain for Backend**:
     - In Vercel Dashboard -> Domains.
     - Add `api.vidswift.tk`.
-    - Configure it to point to Fly.io IP (A record) if managing DNS via Vercel, OR set it up in Fly.io if managing DNS elsewhere.
-    - *Simpler approach*: Keep backend on `fly.dev` subdomain if strictly free.
+    - Configure it to point to Render's IP or CNAME if managing DNS via Vercel, OR set it up in Render if managing DNS elsewhere.
+    - *Simpler approach*: Keep backend on `onrender.com` subdomain if strictly free.
 
 ## D) Ad Network Integration
 
