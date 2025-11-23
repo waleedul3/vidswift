@@ -9,12 +9,15 @@ import yt_dlp
 app = FastAPI(title="VidSwift API")
 
 origins = [
-    "http://localhost:3000",
+    "https://vidswift-seven.vercel.app",
     "https://vidswift.tk",
     "https://vidswift.ml",
     "https://vidswift.ga",
     "https://vidswift.cf",
     "https://www.vidswift.tk",
+    "https://localhost:3000",
+    "http://localhost:3000",
+
 ]
 
 app.add_middleware(
@@ -37,7 +40,9 @@ async def extract_info(url: str):
     
     try:
         ydl_opts = {
-            'quiet': True,
+            "quiet": True,
+            "nocheckcertificate": True,
+            "cookiefile": "cookies.txt",
             'no_warnings': True,
             'extract_flat': True, # Fast extraction
         }

@@ -16,7 +16,7 @@ export default function Home() {
     setVideoInfo(null);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://vidswift.onrender.com";
       const response = await fetch(`${apiUrl}/extract?url=${encodeURIComponent(url)}`);
 
       if (!response.ok) {
