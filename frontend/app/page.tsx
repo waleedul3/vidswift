@@ -22,13 +22,15 @@ export default function Home() {
       const response = await fetch(`${apiUrl}/extract?url=${encodeURIComponent(url)}`);
 
       if (!response.ok) {
-        throw new Error("Failed to fetch video info");
+        const errorData = await response.json().catch(() => ({ detail: "Failed to fetch video info" }));
+        throw new Error(errorData.detail || "Failed to fetch video info");
       }
 
       const data = await response.json();
       setVideoInfo(data);
     } catch (err) {
-      setError("Failed to process URL. Please check the link and try again.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to process URL. Please check the link and try again.";
+      setError(errorMessage);
       console.error(err);
     } finally {
       setIsLoading(false);
