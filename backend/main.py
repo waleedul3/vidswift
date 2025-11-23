@@ -42,9 +42,8 @@ async def extract_info(url: str):
         ydl_opts = {
             "quiet": True,
             "nocheckcertificate": True,
-            "cookiefile": "cookies.txt",
+            "cookiefile": "/app/cookies.txt",
             'no_warnings': True,
-            'extract_flat': True, # Fast extraction
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)

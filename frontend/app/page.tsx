@@ -9,11 +9,13 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [videoInfo, setVideoInfo] = useState(null);
   const [error, setError] = useState("");
+  const [originalUrl, setOriginalUrl] = useState("");
 
   const handleUrlSubmit = async (url: string) => {
     setIsLoading(true);
     setError("");
     setVideoInfo(null);
+    setOriginalUrl(url);
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://vidswift.onrender.com";
@@ -34,17 +36,13 @@ export default function Home() {
   };
 
   const handleDownload = async (formatId: string) => {
-    if (!videoInfo) return;
+    if (!videoInfo || !originalUrl) return;
 
-    // In a real app, this would trigger the download
-    // For now, we'll redirect to the API download endpoint
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    // We need the original URL, but we don't have it stored in videoInfo. 
-    // Ideally we should store it or pass it back.
-    // For this demo, we'll just alert.
-    alert(`Starting download for format ${formatId}... (Backend integration required for actual file stream)`);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://vidswift.onrender.com";
+    const downloadUrl = `${apiUrl}/download?url=${encodeURIComponent(originalUrl)}&format_id=${formatId}`;
 
-    // Example: window.location.href = `${apiUrl}/download?url=...&format_id=${formatId}`;
+    // Open download in new tab
+    window.open(downloadUrl, '_blank');
   };
 
   return (
