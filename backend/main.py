@@ -54,7 +54,10 @@ async def extract_info(url: str):
                 "formats": _process_formats(info)
             }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        traceback.print_exc()
+        print(f"Error extracting info: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
 
 def _process_formats(info):
     # This is a simplified format processor. 
