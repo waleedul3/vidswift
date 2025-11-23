@@ -1,28 +1,33 @@
 # VidSwift Deployment Guide
 
-## A) Backend Hosting on Railway (FREE TRIAL/PAID)
+## A) Backend Hosting on Render (FREE)
 
 1.  **Sign Up**:
-    - Go to [Railway.app](https://railway.app/) and sign up with GitHub.
+    - Go to [Render.com](https://render.com/) and sign up with GitHub.
 
-2.  **Create Project**:
-    - Click "New Project" -> "Deploy from GitHub repo".
-    - Select your `vidswift` repository.
+2.  **Create Web Service**:
+    - Click "New" -> "Web Service".
+    - Connect your `vidswift` repository.
 
 3.  **Configure Service**:
-    - Railway will detect the `Dockerfile` in `backend/`.
-    - If it doesn't automatically detect the root directory, go to Settings -> Root Directory and set it to `/backend`.
-    - Go to "Variables" tab.
-    - Add `PORT` = `8000` (Optional, Railway usually assigns one, but our Dockerfile handles it).
+    - **Name**: `vidswift-api`
+    - **Region**: Choose nearest.
+    - **Branch**: `main`
+    - **Root Directory**: `backend` (IMPORTANT)
+    - **Runtime**: `Docker`
+    - **Instance Type**: Free
 
-4.  **Generate Domain**:
-    - Go to "Settings" -> "Networking".
-    - Click "Generate Domain".
-    - You will get a URL like `vidswift-production.up.railway.app`.
+4.  **Environment Variables**:
+    - Render automatically sets `PORT`.
+    - Our Dockerfile is already configured to use it (`CMD uvicorn ... --port ${PORT:-8000}`).
 
-5.  **Update Frontend**:
-    - Copy this URL.
-    - You will need it for the Vercel `NEXT_PUBLIC_API_URL` environment variable.
+5.  **Deploy**:
+    - Click "Create Web Service".
+    - Wait for the build to finish.
+    - Copy the service URL (e.g., `https://vidswift-api.onrender.com`).
+
+6.  **Update Frontend**:
+    - Use this URL for the Vercel `NEXT_PUBLIC_API_URL` environment variable.
 
 ## B) Frontend Hosting on Vercel (FREE)
 
