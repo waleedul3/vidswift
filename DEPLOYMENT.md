@@ -1,40 +1,28 @@
 # VidSwift Deployment Guide
 
-## A) Backend Hosting on Fly.io (FREE)
+## A) Backend Hosting on Railway (FREE TRIAL/PAID)
 
-1.  **Install flyctl**:
-    - Windows: `iwr https://fly.io/install.ps1 -useb | iex`
-    - Mac/Linux: `curl -L https://fly.io/install.sh | sh`
+1.  **Sign Up**:
+    - Go to [Railway.app](https://railway.app/) and sign up with GitHub.
 
-2.  **Login**:
-    ```bash
-    flyctl auth login
-    ```
+2.  **Create Project**:
+    - Click "New Project" -> "Deploy from GitHub repo".
+    - Select your `vidswift` repository.
 
-3.  **Launch App**:
-    Navigate to the `backend` directory:
-    ```bash
-    cd backend
-    flyctl launch
-    ```
-    - App Name: `vidswift-api` (or unique name)
-    - Region: Choose nearest (e.g., `sjc`, `lhr`)
-    - Database: No
-    - Deploy: Yes
+3.  **Configure Service**:
+    - Railway will detect the `Dockerfile` in `backend/`.
+    - If it doesn't automatically detect the root directory, go to Settings -> Root Directory and set it to `/backend`.
+    - Go to "Variables" tab.
+    - Add `PORT` = `8000` (Optional, Railway usually assigns one, but our Dockerfile handles it).
 
-4.  **Deploy Updates**:
-    ```bash
-    flyctl deploy
-    ```
+4.  **Generate Domain**:
+    - Go to "Settings" -> "Networking".
+    - Click "Generate Domain".
+    - You will get a URL like `vidswift-production.up.railway.app`.
 
-5.  **Resulting URL**:
-    `https://vidswift-api.fly.dev`
-
-6.  **Custom Domain (Optional)**:
-    ```bash
-    flyctl certs add api.vidswift.tk
-    ```
-    Add `A` and `AAAA` records as instructed by flyctl.
+5.  **Update Frontend**:
+    - Copy this URL.
+    - You will need it for the Vercel `NEXT_PUBLIC_API_URL` environment variable.
 
 ## B) Frontend Hosting on Vercel (FREE)
 
