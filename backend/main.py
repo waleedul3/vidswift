@@ -9,7 +9,7 @@ import yt_dlp
 app = FastAPI(title="VidSwift API")
 
 origins = [
-    "http://localhost:3000",
+    "https://vidswift-seven.vercel.app",
     "https://vidswift.tk",
     "https://vidswift.ml",
     "https://vidswift.ga",
