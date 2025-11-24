@@ -39,12 +39,31 @@ async def extract_info(url: str):
         raise HTTPException(status_code=400, detail="URL is required")
     
     try:
+        # Check if it's an Instagram URL
+        is_instagram = 'instagram.com' in url.lower()
+        
         ydl_opts = {
             "quiet": True,
             "nocheckcertificate": True,
-            "cookiefile": "/app/cookies.txt",
             'no_warnings': True,
         }
+        
+        # Add Instagram-specific options
+        if is_instagram:
+            ydl_opts.update({
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                },
+                'extractor_args': {
+                    'instagram': {
+                        'api_version': 'v1'
+                    }
+                }
+            })
+        else:
+            # Use cookies for other platforms
+            ydl_opts["cookiefile"] = "/app/cookies.txt"
+            
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
@@ -61,6 +80,14 @@ async def extract_info(url: str):
         import traceback
         traceback.print_exc()
         print(f"Error extracting info: {str(e)}")
+        
+        # Provide more specific error messages for Instagram
+        if 'instagram.com' in url.lower():
+            if 'login' in str(e).lower() or 'private' in str(e).lower():
+                raise HTTPException(status_code=403, detail="This Instagram content requires login or is private. Try with a public post.")
+            elif 'not available' in str(e).lower():
+                raise HTTPException(status_code=404, detail="Instagram content not found or has been removed.")
+        
         raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
 
 def _process_formats(info):
@@ -90,11 +117,29 @@ async def download_video(url: str, format_id: str = None, background_tasks: Back
     file_id = str(uuid.uuid4())
     filename_template = f"temp_{file_id}.%(ext)s"
     
+    # Check if it's an Instagram URL
+    is_instagram = 'instagram.com' in url.lower()
+    
     ydl_opts = {
         'format': format_id if format_id else 'best',
         'outtmpl': filename_template,
         'quiet': True,
     }
+    
+    # Add Instagram-specific options
+    if is_instagram:
+        ydl_opts.update({
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            'extractor_args': {
+                'instagram': {
+                    'api_version': 'v1'
+                }
+            }
+        })
+    else:
+        ydl_opts['cookiefile'] = '/app/cookies.txt'
 
     try:
         # Download in a separate thread to not block event loop

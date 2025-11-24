@@ -41,14 +41,23 @@ export default function DownloadCard({ videoInfo, onDownload }: DownloadCardProp
         <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto mt-8">
             <div className="md:flex">
                 <div className="md:flex-shrink-0">
-                    <div className="relative h-48 w-full md:w-80 md:h-full">
-                        <Image
-                            src={videoInfo.thumbnail}
-                            alt={videoInfo.title}
-                            fill
-                            className="object-cover"
-                            unoptimized // Allow external URLs
-                        />
+                    <div className="relative h-48 w-full md:w-80 md:h-full bg-gray-200 flex items-center justify-center">
+                        {videoInfo.thumbnail ? (
+                            <Image
+                                src={videoInfo.thumbnail}
+                                alt={videoInfo.title}
+                                fill
+                                className="object-cover"
+                                unoptimized // Allow external URLs
+                            />
+                        ) : (
+                            <div className="text-gray-500 text-center">
+                                <svg className="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                </svg>
+                                <span className="text-sm">No thumbnail</span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="p-8 w-full">
