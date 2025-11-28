@@ -40,6 +40,10 @@ async def extract_info(url: str):
     try:
         # Check if it's an Instagram URL
         is_instagram = 'instagram.com' in url.lower()
+        is_youtube = 'youtube.com' in url.lower() or 'youtu.be' in url.lower()
+        
+        # Determine cookie file path (works both locally and on Render)
+        cookie_file = "/app/cookies.txt" if os.path.exists("/app/cookies.txt") else "cookies.txt"
         
         ydl_opts = {
             "quiet": True,
@@ -60,8 +64,20 @@ async def extract_info(url: str):
                 }
             })
         else:
-            # Use cookies for other platforms
-            ydl_opts["cookiefile"] = "/app/cookies.txt"
+            # Use cookies for YouTube and other platforms
+            if os.path.exists(cookie_file):
+                ydl_opts["cookiefile"] = cookie_file
+            
+            # Add YouTube-specific options to avoid bot detection
+            if is_youtube:
+                ydl_opts.update({
+                    'http_headers': {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Language': 'en-us,en;q=0.5',
+                        'Sec-Fetch-Mode': 'navigate',
+                    }
+                })
             
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -116,8 +132,12 @@ async def download_video(url: str, format_id: str = None, background_tasks: Back
     file_id = str(uuid.uuid4())
     filename_template = f"temp_{file_id}.%(ext)s"
     
-    # Check if it's an Instagram URL
+    # Check if it's an Instagram URL or YouTube URL
     is_instagram = 'instagram.com' in url.lower()
+    is_youtube = 'youtube.com' in url.lower() or 'youtu.be' in url.lower()
+    
+    # Determine cookie file path (works both locally and on Render)
+    cookie_file = "/app/cookies.txt" if os.path.exists("/app/cookies.txt") else "cookies.txt"
     
     ydl_opts = {
         'format': format_id if format_id else 'best',
@@ -138,7 +158,20 @@ async def download_video(url: str, format_id: str = None, background_tasks: Back
             }
         })
     else:
-        ydl_opts['cookiefile'] = '/app/cookies.txt'
+        # Use cookies for YouTube and other platforms
+        if os.path.exists(cookie_file):
+            ydl_opts['cookiefile'] = cookie_file
+        
+        # Add YouTube-specific options to avoid bot detection
+        if is_youtube:
+            ydl_opts.update({
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'en-us,en;q=0.5',
+                    'Sec-Fetch-Mode': 'navigate',
+                }
+            })
 
     try:
         # Download in a separate thread to not block event loop
