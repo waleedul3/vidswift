@@ -15,9 +15,8 @@ origins = [
     "https://vidswift.ga",
     "https://vidswift.cf",
     "https://www.vidswift.tk",
-    "https://localhost:3000",
     "http://localhost:3000",
-
+    "http://localhost:3001",
 ]
 
 app.add_middleware(
